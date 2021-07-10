@@ -1,0 +1,38 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+
+
+{% block title %}
+Sign In
+{% endblock title %}
+
+
+{% block main %}
+<section>
+    <center>
+  <div class="container">
+    <h1>Login</h1><br><br><br>
+    <div class="">
+      <div class="col-md-6">
+        <form action="" method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input class="form-control" type="text" name="username" id="username">
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input class="form-control" type="password" name="password" id="password">
+          </div>
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <br><br>
+          <button type="submit" class="btn btn-success">Login</button>
+        </form><br>
+        <h5>Create a new account ......? <a href="{% url 'register' %}">Sign up</a></h5>
+        <br><br>
+      </div>
+    </div>
+  </div>
+</center>
+</section>
+{% endblock main %}

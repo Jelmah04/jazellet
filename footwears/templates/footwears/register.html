@@ -1,0 +1,59 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+
+
+{% block title %}
+Sign Up
+{% endblock title %}
+
+
+{% block main %}
+<section>
+    <center>
+    <div class="">
+    <h1>Create an Account</h1><br>
+    <div class="">
+      <div class="col-md-6">
+        <form action="" method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="firstname">Firstname</label>
+            <input class="form-control" type="text" name="firstname" id="firstname">
+          </div>
+          <div class="form-group">
+            <label for="lastname">Lastname</label>
+            <input class="form-control" type="text" name="lastname" id="lastname">
+          </div>
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input class="form-control" type="text" name="username" id="username">
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input class="form-control" type="text" name="email" id="email">
+          </div>
+          <div class="form-group">
+            <label for="number">Phone Number</label>
+            <input class="form-control" type="text" name="number" id="number">
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input class="form-control" type="password" name="password" id="password">
+          </div>
+          <div class="form-group">
+            <label for="confirm_password">Confirm Password</label>
+            <input class="form-control" type="password" name="confirm_password" id="confirm_password">
+          </div>
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <br><br>
+          <button type="submit" class="btn btn-success">Register</button>
+        </form><br>
+        <h5>Already have an account ......? <a href="{% url 'login' %}">Sign in</a></h5>
+        <br><br>
+      </div>
+    </div>
+  </div>
+</center>
+</section>
+
+{% endblock main %}

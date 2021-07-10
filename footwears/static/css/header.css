@@ -1,0 +1,33 @@
+.topheader{
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    background-color: rgb(224, 220, 220);
+    color: blue;
+}
+/* .nav-item, .nav-link{
+    color: #000;
+} */
+.featuredprod{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+.singleprod{
+    text-align: center;
+}
+.sec2{
+    width: 80%;
+    margin: 0 auto;
+    /* background-color: rgb(245, 244, 244); */
+    padding: 10px;
+}
+.sec3{
+    background: radial-gradient(#fff, #ffd6d6);
+    width: 100%;
+    margin: 10px auto 0px;
+    padding: 15px 25px 15px;
+}
+.eachfp{
+    border: 1px solid orangered;
+    padding: 10px;
+}

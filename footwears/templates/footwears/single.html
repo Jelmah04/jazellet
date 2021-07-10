@@ -1,0 +1,148 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+
+
+{% block title %}
+ Jazellet || product single page
+{% endblock title %}
+
+
+{% block breadcrumb %}
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home </li>
+            <li class="breadcrumb-item"><a href="{% url 'allfootwears' %}"> /  All products</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Single detail</li>
+        </ol>
+    </nav>
+{% endblock breadcrumb %}
+
+{% block main %}
+<section class="spdsec1">
+  <h3 style="text-align: center;">Single Product Detail</h3>
+  <h5 style="text-align: center;">Lorem ipsum dolor sit, Ullam saepe at libero numquam enim commodi iure reiciendis, aspernatur voluptates.</h5>
+  
+  <div class="singleprod" style="text-align: center;">
+    {% if single %}
+        <div class="eachfp" style="text-align: center;">
+            <center>
+                <picture>
+                    <img src="{{single.prodimage.url}}" width="280px" height="200px" alt="...">
+                </picture>
+            </center>
+            <h5 class="prodname">Prodname:{{single.prodname}}</h5>
+            <h5 class="category">Category:{{single.category}}</h5>
+            <h5 class="category">Number In Stock:{{single.quantity_instock}}</h5>
+            <h5 class="price">Price:{{single.price}}</h5>
+            <form method="POST" id="payform">
+            {% csrf_token %}
+                <div class="topay">
+                    <center>
+                    <button type="submit" onclick="payWithPaystack()" id="btn-pay" style="width: 30%; margin:0 auto;" class="btn btn-success">Checkout</button>
+                    </center>
+                    <input type="hidden" id="email" value="user.email" required><br><br>
+                    <input type="hidden" id="price" value="{{single.price}}" required><br><br>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="sec3" style="text-align: center;">
+    <h4>Lorem ipsum dolor sit amet consectetur adipisicing.</h4>
+    <h6>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Architecto magnam eligendi illo quibusdam commodi. Dolore placeat fugit magnam unde illo facere eaque eveniet reiciendis quia cumque quas illum corrupti architecto optio recusandae inventore a nemo, quaerat fugiat reprehenderit autem repellat culpa. Vitae voluptas, temporibus doloremque sapiente reprehenderit possimus fugit, qui accusamus obcaecati veritatis minima placeat. Dolore, ipsa voluptatum obcaecati sapiente sed sint voluptate mollitia temporibus hic! Quidem maxime beatae adipisci harum, quos perspiciatis placeat unde repudiandae quam animi perferendis a dolorum itaque voluptas ullam at dolore? Ipsa et quam earum reiciendis quod. Ex error dolorem temporibus exercitationem tempore officiis consequatur optio ullam dolores, natus nesciunt eligendi asperiores iure accusantium dolor sapiente ab tempora neque deleniti illo molestias debitis doloremque sed! Aut, vel porro. Explicabo culpa modi illo veritatis ipsa amet possimus perspiciatis molestias praesentium nulla, iure, voluptatem rerum quidem provident totam magni nobis. Id quaerat reprehenderit voluptatibus blanditiis veritatis, iusto quidem vero deleniti commodi voluptate dicta ullam voluptates eveniet eligendi fugiat. Numquam deserunt nobis vel fugiat molestias culpa tenetur pariatur facilis quia ipsum illum dolores, tempora doloremque repellat non in temporibus voluptas quidem voluptatem ullam iure sint. Natus, non, rem distinctio quae, facere magnam voluptatem labore commodi minus voluptatum quam?</h6>
+</section>
+
+
+<script src="https://js.paystack.co/v1/inline.js"></script> 
+<!-- <script src="/static/libs/jquery/jquery.min.js"></script> -->
+
+
+<script>
+    function payWithPaystack() {
+        // alert('am in')
+        var handler = PaystackPop.setup({
+            key: 'pk_test_f9d521d0cf9be5abb26d59e9d6340b759183a40e', // Replace with your public key
+            email: '{{ user.email }}',
+            amount: document.getElementById('price').value  * 100,
+            currency: 'NGN',
+            ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you,            
+            // label: "Optional string that replaces customer email"
+            onClose: function(){
+                alert('Payment Cancelled.');
+            },
+            callback: function(response){
+              console.log(response);
+                $.ajax({
+                    url: 'http://localhost/verify_transaction?reference='+ response.reference,
+                    method: 'get',
+                    success: function (res) {
+                      console.log(res);
+                        // the transaction status is in response.data.status
+                        if(res.data.status == 'success') {
+                            let message = 'Payment completed!    Thanks.\n \n \nClick OK to Continue';
+                            alert(message);
+                            // location.reload();
+                        } else {
+                            let message = 'Payment was not completed! Click OK to Try Again';
+                            alert(message);
+                            // location.reload();
+                        }
+                    }
+                });
+                
+            }
+        });
+        handler.openIframe();
+        // alert('am about to leave')
+    }
+    // alert('am out')
+    </script>
+
+
+
+{% endblock main %}
+
+
+
+function payWithPaystack() {
+    // e.preventDefault();
+    // var user_amount = $("#price").val();
+    let handler = PaystackPop.setup({
+        key: 'pk_test_f9d521d0cf9be5abb26d59e9d6340b759183a40e', // Replace with your public key
+        email: '{{ user.email }}',
+        amount: document.getElementById('price').value  * 100,
+        currency: 'NGN',
+        ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you,            
+        // label: "Optional string that replaces customer email"
+        onClose: function(){
+            alert('Payment Cancelled.');
+        },
+        callback: function(response){
+          console.log(response);
+            $.ajax({
+                url: 'http://localhost/verify_transaction?reference='+ response.reference,
+                method: 'get',
+                success: function (res) {
+                  console.log(res);
+                    // the transaction status is in response.data.status
+                    if(res.data.status == 'success') {
+                        let message = 'Payment completed!    Thanks.\n \n \nClick OK to Continue';
+                        alert(message);
+                        // location.reload();
+                    } else {
+                        let message = 'Payment was not completed! Click OK to Try Again';
+                        alert(message);
+                        // location.reload();
+                    }
+                }
+            });
+            
+        }
+    });
+    handler.openIframe();
+
+}
+
+// <!--Ending of other parts for funding  -->

@@ -1,0 +1,220 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous"> -->
+    <script src="https://kit.fontawesome.com/aba0bd1eaf.js" crossorigin="anonymous"></script>
+    
+    <!-- Customized CSS -->
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
+
+
+    <title>
+        {% block title %}
+          
+        {% endblock title %}
+    </title>
+  </head>
+  <body>
+
+    <div class="topheader">
+        <div class="div1">
+            <a href=""><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+            <a href="https://wa.me/2348106966584"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+            <a href="https://wa.me/2348106966584"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+            <a href="https://wa.me/2348106966584"><i class="fa fa-phone-square" aria-hidden="true"></i></a>
+        </div>
+        <div class="div2" style="float: right;">
+            <a href="{% url 'contact' %}">Help</a>
+            <a href="{% url 'contact' %}">FAQ</a>
+            <a href="{% url 'contact' %}">Login</a>
+            <a href="{% url 'contact' %}">Register</a>
+        </div>
+    </div>
+    <header>
+          
+          <!-- <nav class="navbar navbar-light" style="background-color: #e3f2fd;"> -->
+            <!-- Navbar content -->
+            <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+                <div class="container-fluid">
+                  <a class="navbar-brand" href="{% url 'home' %}">
+                    <img src="{% static 'images/logo4.png' %}" width="50px" alt="">
+                  </a>
+                  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                  </button>
+                  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                      <li class="nav-item"><a class="nav-link" style="color: black;" href="{% url 'home' %}">Home</a></li>
+                      <li class="nav-item"><a class="nav-link" style="color: black;" href="{% url 'contact' %}">Contact</a></li>
+                      <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" style="color: black;" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Products
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                          <li><a class="dropdown-item" href="{% url 'allfootwears' %}">Footwears</a></li>
+                          <li><a class="dropdown-item" href="{% url 'allheadwears' %}">Headwears</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="#">Contact one of our Agents</a></li>
+                        </ul>
+                      </li>
+
+                      <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" style="color: black;" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Products2
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                          {% for item in cats %}
+                            <a class="dropdown-item" href="">
+                              {{ item.categoryname }}
+                            </a>
+                          {% endfor %}
+
+                          <li><a class="dropdown-item" href="#">Contact one of our Agents</a></li>
+                        </ul>
+                      </li>
+
+                     {% if request.user.is_authenticated %}
+                      <li class="nav-item">
+                        <a href="#" class="nav-link">Welcome {{request.user.username}}</a>
+                      </li>
+                      <li class="nav-item"><a class="nav-link" style="color: black;" href="">Cart <span>0</span></a></li>
+                      <li class="nav-item">
+                        <a href="" style="color: black;" class="nav-link">
+                          WishLists (<i class="fa fa-heart"></i><span id="counter">0</span>)
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="{% url 'logout' %}" style="color: black;" class="nav-link">LogOut</a>
+                      </li>
+                    
+                      {% else %}
+                      <li class="nav-item">
+                        <a href="register" style="color: black;" class="nav-link">Register</a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="{% url 'login' %}" style="color: black;" class="nav-link">Login</a>
+                      </li>
+                      {% endif %}
+
+
+                      <!-- <li class="nav-item">
+                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                      </li> -->
+                    </ul>
+                    <form class="d-flex">
+                      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                      <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                  </div>
+                </div>
+              </nav>
+            <!-- Navbar content end -->
+    </header>
+
+    <main>
+        {% block breadcrumb %}
+          
+        {% endblock breadcrumb %}
+
+        {% block main %}
+          
+        {% endblock main %}
+    </main>
+
+    <footer>
+      <div class="footer" style="margin: 0; padding: 5px; background-color: black; color: white; text-align: center;">
+        <h5>Copyright &copy; JelmahTech</h5>
+      </div>
+    </footer>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+    <script src="https://js.paystack.co/v1/inline.js"></script> 
+    <script src="/static/libs/jquery/jquery.min.js"></script>
+    <script src="../.././static/js/counter.js"></script>
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
+    -->
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="{% static 'css/contact.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}"> -->
+    <!-- <title>
+
+    </title>
+</head>
+<body>
+    <header>
+        <div class="topheader">
+            <div class="div1">
+                <a href=""><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+                <a href="https://wa.me/2348106966584"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+                <a href="https://wa.me/2348106966584"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                <a href="https://wa.me/2348106966584"><i class="fa fa-phone-square" aria-hidden="true"></i></a>
+              </div>
+              <div class="div2" style="float: right;">
+                <a href="{% url 'contact' %}">Help</a>
+                <a href="{% url 'contact' %}">FAQ</a>
+                <a href="{% url 'contact' %}">Login</a>
+                <a href="{% url 'contact' %}">Register</a>
+              </div>
+        </div>
+        <h2><img src="{% static 'images/clogo1.png' %}" width="100px" alt="chief logo"></h2>
+        <nav>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'contact' %}">Contact Us</a></li>
+        </nav>
+    </header>
+
+    <main>
+    </main>
+
+    <footer>
+        <h2>This is the general footer</h2>
+    </footer>
+
+</body>
+</html> -->

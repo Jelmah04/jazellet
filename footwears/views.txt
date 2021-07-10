@@ -1,0 +1,27 @@
+
+#################### Context processor should render product 2 dynamically
+# def baseec(request):
+# 	product2 = Category.objects.all()
+# 	return {'product2' : product2}
+
+
+
+#################### SECURITY
+# def loginpage(request):
+#   if request.user.is_authenticated:
+#     return redirect('home')
+
+#   if request.method == 'POST':
+#     next = request.POST.get('next', '/')
+#     user = authenticate(request,username=request.POST['username'],password=request.POST['password'])
+#     if user:
+#       login(request,user)
+#       return redirect(next)
+#   return render(request,'footwears/login.html')
+
+# def logoutpage(request):
+#   logout(request)
+#   return redirect('home')
+
+# def register(request):
+#     return render(request, 'footwears/register.html')

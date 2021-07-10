@@ -1,0 +1,105 @@
+
+{% extends "shared/base.html" %}
+{% load static %}
+
+{% block title %}
+  Login
+{% endblock title %}
+
+
+
+
+{% block main %}
+  <div class="form-box" id="">
+    <h4 class="accthead">Login</h4>
+    <hr style="color:   #ccc;">
+    <!-- {% if form %} -->
+      <!-- <p>Invalid username/password</p>           -->
+    <!-- {% endif %} -->
+    <!-- {% if next %} -->
+      <!-- <p>You need to login to access this page</p> -->
+    <!-- {% endif %} -->
+<center>
+
+          {% if messages %}
+            {% for item in messages %}
+                <p style="background-color: rgb(105, 236, 105); color: aliceblue; padding: 5px; border-radius: 8px;"> {{ item }} </p>
+            {% endfor %} 
+          {% endif %}
+
+
+    <form action="{% url 'login' %}" method="POST" class="acct">
+      {% csrf_token %}
+      <label>Username: </label><p>{{form.username}}</p>
+      <label>Password: </label><p>{{form.password}}</p>
+      <br>
+      
+      <p>
+        <input class="btn button-box" id="button-box" type="submit" value="Login">
+        <input type="hidden" name="next" value="{{ next }}">
+      </p>
+    </form>
+      <p class="fpcna"><a href="{% url 'password_reset' %}">Forgotten Password ..........? click here</a></p>
+      <p class="fpcna"><a href="{% url 'register' %}">Create new account</a></p>
+
+</center>
+  </div>
+
+
+
+
+
+<style>
+label{
+    font-weight: bolder;
+    margin-left: 7%;    
+    float: left;
+}
+.form-box{
+    position: relative;
+    margin: 6rem auto;
+    width: 60%;
+    height: 400px;
+    padding: 5px;
+    background-color: #fff;
+    border: 1px solid #cb26e0;
+    overflow: hidden;
+    align-items: center;
+}
+.button-box{
+    width: 30%;
+    padding: 10px 30px;
+    cursor: pointer;
+    display: block;
+    margin: auto;
+    box-shadow: 0 0 10px 5px yellowgreen;
+    background:linear-gradient(to right, #cb26e0, #0fffdf, grey) ;
+    border: 0;
+    outline: none;
+    border-radius: 30px;
+}
+.acct input{
+    padding-left: 5px;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    margin: 0 auto 5px;
+    width: 90%;
+}
+.accthead{
+  text-align: center;
+  background-color: thistle;
+  padding-bottom: 5px;
+}
+
+
+
+ /* Small devices (landscape phones, 576px and up) */
+ @media (max-width: 768px) {     
+
+}
+
+</style>
+
+{% endblock main %}
+

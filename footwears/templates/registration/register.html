@@ -1,0 +1,104 @@
+
+{% extends "shared/base.html" %}
+{% load static %}
+
+{% block title %}
+  Register
+{% endblock title %}
+
+
+
+{% block main %}
+
+<style>
+    #kk{
+        width: 60%;
+        margin: 0 auto;
+        border: 2px solid mediumseagreen;
+        padding: 0.8rem;
+    }
+    .helptext, form ul li{
+      display: none;
+    }
+
+</style>
+<style>
+label{
+    font-weight: bolder;
+    margin-left: 7%;    
+    float: left;
+}
+ #registerform{
+    position: relative;
+    margin: 6rem auto;
+    width: 60%;
+    height: 500px;
+    padding: 5px;
+    background-color: #fff;
+    border: 1px solid #cb26e0;
+    overflow: hidden;
+    align-self: center;
+}
+.button-box{
+    width: 60%;
+    padding: 10px 30px;
+    cursor: pointer;
+    display: block;
+    margin: auto;
+    /* box-shadow: 0 0 10px 5px yellowgreen; */
+    background:linear-gradient(to right, #cb26e0, #0fffdf, grey) ;
+    border-radius: 30px;
+}
+.acct input{
+    padding-left: 5px;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    margin: 0 auto 5px;
+    width: 90%;
+}
+.accthead{
+  text-align: center;
+  background-color: thistle;
+  padding-bottom: 5px;
+}
+
+
+
+ /* Small devices (landscape phones, 576px and up) */
+ @media (max-width: 768px) {     
+
+}
+
+</style>
+
+
+
+
+<section id="registerform" class="formbox" style="margin-top: 100px; padding-bottom: 50px; height: 550px;">
+
+{% if messages %}
+  {% for item in messages %}
+      <p style="background-color: rgb(238, 11, 11); color: aliceblue; padding: 5px; border-radius: 8px;"> {{ item }} </p>
+  {% endfor %} 
+{% endif %}
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <center><h1 class="accthead">Sign Up</h1>
+          <form action="{% url 'register' %}" method="POST" class="acct">
+            {% csrf_token %}
+            {{ form.as_p}}
+
+            <button type="submit" class="btn  btn-success button-box">Register</button>
+          </form>
+          <p>Already have an account .....? <a href="{% url 'login' %}">Go to login</a></p>
+<br><br><br><br>
+        </center>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+{% endblock main %}

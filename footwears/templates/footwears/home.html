@@ -1,0 +1,68 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+
+
+{% block title %}
+ Jazellet || footwears of all kinds
+{% endblock title %}
+
+
+{% block breadcrumb %}
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Homepage</li>
+        </ol>
+    </nav>
+{% endblock breadcrumb %}
+
+{% block main %}
+  <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="{% static 'images/banner.jpg' %}" class="d-block w-100" height="350px" alt="...">
+      </div>
+      <div class="carousel-item">
+        <img src="{% static 'images/banner2.jpg' %}" class="d-block w-100" height="350px" alt="...">
+      </div>
+      <div class="carousel-item">
+        <img src="{% static 'images/banner3.jpg' %}" class="d-block w-100" height="350px" alt="...">
+      </div>
+    </div>
+  </div>
+
+<section class="sec2">
+  <h3 style="text-align: center;">Featured Products</h3>
+  <h5 style="text-align: center;">Lorem ipsum dolor sit, Ullam saepe at libero numquam enim commodi iure reiciendis, aspernatur voluptates.</h5>
+  
+  <div class="featuredprod">
+    
+    {% if featured %}
+      {% for items in featured %}
+        <div class="eachfp">
+            <center>
+            <button class="wishfor" onclick="whyme()" style="color: white; background-color: palevioletred; font-weight: bolder;">Add To WishList</button>
+
+                <picture>
+                <h5 class="prodname">{{items.prodname}}</h5>
+                <img src="{{items.prodimage.url}}" width="280px" height="200px" alt="...">
+                </picture>
+            </center>
+            <h5 class="category">{{items.category}}</h5>
+            <h5 class="price">{{items.price}}</h5>
+            <p><a href="{% url 'allfootwears' %}">See more products</a></p>
+        </div>
+      {% endfor %}
+    {% endif %}
+    
+  </div>
+</section>
+
+<section class="sec3" style="text-align: center;">
+    <h4>Lorem ipsum dolor sit amet consectetur adipisicing.</h4>
+    <h6>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Architecto magnam eligendi illo quibusdam commodi. Dolore placeat fugit magnam unde illo facere eaque eveniet reiciendis quia cumque quas illum corrupti architecto optio recusandae inventore a nemo, quaerat fugiat reprehenderit autem repellat culpa. Vitae voluptas, temporibus doloremque sapiente reprehenderit possimus fugit, qui accusamus obcaecati veritatis minima placeat. Dolore, ipsa voluptatum obcaecati sapiente sed sint voluptate mollitia temporibus hic! Quidem maxime beatae adipisci harum, quos perspiciatis placeat unde repudiandae quam animi perferendis a dolorum itaque voluptas ullam at dolore? Ipsa et quam earum reiciendis quod. Ex error dolorem temporibus exercitationem tempore officiis consequatur optio ullam dolores, natus nesciunt eligendi asperiores iure accusantium dolor sapiente ab tempora neque deleniti illo molestias debitis doloremque sed! Aut, vel porro. Explicabo culpa modi illo veritatis ipsa amet possimus perspiciatis molestias praesentium nulla, iure, voluptatem rerum quidem provident totam magni nobis. Id quaerat reprehenderit voluptatibus blanditiis veritatis, iusto quidem vero deleniti commodi voluptate dicta ullam voluptates eveniet eligendi fugiat. Numquam deserunt nobis vel fugiat molestias culpa tenetur pariatur facilis quia ipsum illum dolores, tempora doloremque repellat non in temporibus voluptas quidem voluptatem ullam iure sint. Natus, non, rem distinctio quae, facere magnam voluptatem labore commodi minus voluptatum quam?</h6>
+</section>
+
+{% endblock main %}
+
+
