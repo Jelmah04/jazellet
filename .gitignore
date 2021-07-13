@@ -1,1 +1,10 @@
 venv
+env
+*migrations
+/migrations/
+migrations/
+**migrations
+/migrations/*
+migrations/*
+*/migrations/*
+migrations/*

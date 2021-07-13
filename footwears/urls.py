@@ -1,4 +1,5 @@
 from django.urls import path
+from django.conf.urls import url
 from . import views
 
 urlpatterns = [
@@ -10,4 +11,5 @@ urlpatterns = [
     path('register/',views.register,name='register'),
     path('webhook/',views.webhook,name='webhook'),
     path('verify_transaction/',views.Verify_Payment,name='verify_transaction'),
+    url(r'initialize_payment/$', views.initialize, name='init_payment'),
 ]

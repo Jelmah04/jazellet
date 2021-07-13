@@ -2,9 +2,11 @@ import requests
 import json
 from django.http import HttpResponseRedirect
 from jazellet import settings
+from decimal import Decimal
 from .models import *
 
-def init_payment(username, lastname, email, amount):
+def init_payment(email,amount):
+    amount = Decimal(amount)*100 # multiply the amount by 100. (from Kobo to Naira)
     url = 'https://api.paystack.co/transaction/initialize'
     headers = {
         'Authorization': 'Bearer '+settings.PAYSTACK_SECRET_KEY,
@@ -13,16 +15,11 @@ def init_payment(username, lastname, email, amount):
         }
     datum = {
         "email": email,
-        "amount": amount
+        "amount": str(amount)
         }
     x = requests.post(url, data=json.dumps(datum), headers=headers)
     if x.status_code != 200:
-        print('not equl to 200')
-        print (str(x.status_code))
+        return x.json()
     else:
-        print('x.status is equal 200')
-    results = x.json()
-    # print('walaaaaaaaaaaaaaaaaaaas3')
-    # print(x.status_code)
-    # print(results)
-    return results
+        results = x.json()
+        return results
