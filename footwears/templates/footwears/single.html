@@ -34,12 +34,11 @@
             <h5 class="category">Category:{{single.category}}</h5>
             <h5 class="category">Number In Stock:{{single.quantity_instock}}</h5>
             <h5 class="price">Price:{{single.price}}</h5>
-            <form method="POST" id="payform">
-            {% csrf_token %}
+            <form id="payform">
                 <div class="topay">
                     <center>
-                    <button type="submit" onclick="payWithPaystack()" id="btn-pay" style="width: 30%; margin:0 auto;" class="btn btn-success">Checkout</button>
-                    </center>
+                        <button type="submit" id="btnPay" style="width: 30%; margin:0 auto;" class="btn btn-success">Checkout</button>
+                        </center>
                     <input type="hidden" id="email" value="user.email" required><br><br>
                     <input type="hidden" id="price" value="{{single.price}}" required><br><br>
                 </div>
@@ -55,48 +54,32 @@
 </section>
 
 
-<script src="https://js.paystack.co/v1/inline.js"></script> 
-<!-- <script src="/static/libs/jquery/jquery.min.js"></script> -->
-
+<script src="/static/js/jquery.min.js"></script>
 
 <script>
-    function payWithPaystack() {
-        var handler = PaystackPop.setup({
-            key: 'pk_test_f9d521d0cf9be5abb26d59e9d6340b759183a40e', // Replace with your public key
-            email: '{{ user.email }}',
-            amount: document.getElementById('price').value  * 100,
-            currency: 'NGN',
-            ref: ''+Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you,            
-            // label: "Optional string that replaces customer email"
-            onClose: function(){
-                alert('Payment Cancelled.');
+    $("#payform").on("submit", function(e){
+        e.preventDefault();
+        $.ajax({
+            url: "{% url 'init_payment' %}",
+            type: 'POST',
+            data: {
+                email: '{{ user.email }}',
+                amount: '{{ single.price }}',
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                dataType: "json",
             },
-            callback: function(response){
-              console.log(response);
-                $.ajax({
-                    url: 'http://localhost/verify_transaction?reference='+ response.reference,
-                    method: 'get',
-                    success: function (res) {
-                      console.log(res);
-                        // the transaction status is in response.data.status
-                        if(res.data.status == 'success') {
-                            let message = 'Payment completed!    Thanks.\n \n \nClick OK to Continue';
-                            alert(message);
-                            // location.reload();
-                        } else {
-                            let message = 'Payment was not completed! Click OK to Try Again';
-                            alert(message);
-                            // location.reload();
-                        }
-                    }
-                });
-                
+            beforeSend: function(){
+                console.log("Ready");
+                $("#btnPay").attr("disabled", "disabled");
+            },
+            success: function(resp){
+                window.location.href = resp.link;
+            },
+            error: function(){
+                $("#btnPay").removeAttr("disabled");
             }
         });
-        handler.openIframe();
-    }
-    </script>
-
-
-
+    });
+    
+</script>
 {% endblock main %}

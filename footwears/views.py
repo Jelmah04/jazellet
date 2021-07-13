@@ -143,3 +143,18 @@ class Verify_Payment(APIView):
 		# current_wallet.save()
 		return Response(results)
 
+# Initialise Payment with Paystack
+def initialize(request):
+	if request.is_ajax():
+		amount = request.POST['amount']
+		email = request.POST['email']
+		# Call the endpoint here
+		pay = init_payment(email,amount)
+		if pay['status'] == False:
+			msg = {"Error": "Error. Please try again."}
+			return JsonResponse(msg)
+		else:
+			msg = {"link": pay['data']['authorization_url']}
+			# Save Reference Code with product details to Database
+			# pay['data']['reference']
+			return JsonResponse(msg)
