@@ -1,0 +1,65 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+{% load humanize %}
+
+
+{% block title %}
+    Jazellet:wishlist
+{% endblock title %}
+
+
+{% block main %}
+<section>
+    <div class="container">
+        <h3 class="text-center mt-5">My Wishlist</h3>
+        <div class="row">
+        <div class="col-sm-12">
+        {% if wishlist %}
+            <table class="table table-hover">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Product</th>
+                <th scope="col">Price</th>
+                <th scope="col">Add to Cart</th>
+                <th scope="col">Remove</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for item in wishlist %}
+            <tr>
+                <td> {{item.product}} </td>
+                <td> {{item.product.price}} </td>
+                <td> 
+                  <form  class="form-inline" action="{% url 'addtocart' %}" method="POST">
+                      {% csrf_token %}
+                    <button class="btn btn-success" type="submit">Add To Cart</button>
+                    <input type="hidden" name="tayo" value="{{ item.product.id }}">
+                  </form>
+                </td>
+                <td>
+                    <form action="{% url 'dewishlist'  %}" method="post"> 
+                        {% csrf_token %}
+                        <button class="btn btn-danger">Remove</button>
+                        <input type="hidden" name="deleteWishTarget" value="{{ item.id }}"> 
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+            {% endfor %}
+        </table>
+        {% else %}
+            <p>
+                <h3 class="bg-success text-white p-5">You have no item in your wishlist</h3>
+            </p>
+       {% endif %}
+            
+        </div>
+        </div>
+    </div>
+
+</section>
+    <br><br><br><br><br>
+
+
+{% endblock main %}

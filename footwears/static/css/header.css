@@ -31,3 +31,24 @@
     border: 1px solid orangered;
     padding: 10px;
 }
+
+
+.allcat{
+    color: white;
+    text-decoration: none;
+  }
+  
+  #cart-icon{
+    font-size: 21px;
+  }
+  
+  .quantityform input{
+    width: 71px;
+    text-align: center;
+  }
+
+  .shipadd{
+      font-weight: bolder;
+      font-size: 18px;
+      margin-right: 10px;
+  }

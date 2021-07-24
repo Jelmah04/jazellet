@@ -54,30 +54,30 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                       <li class="nav-item"><a class="nav-link" style="color: black;" href="{% url 'home' %}">Home</a></li>
                       <li class="nav-item"><a class="nav-link" style="color: black;" href="{% url 'contact' %}">Contact</a></li>
-                      <li class="nav-item dropdown">
+                  <!--    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" style="color: black;" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                           Products
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                          <li><a class="dropdown-item" href="{% url 'allfootwears' %}">Footwears</a></li>
-                          <li><a class="dropdown-item" href="{% url 'allheadwears' %}">Headwears</a></li>
+                          <li><a class="dropdown-item" href="">Footwears</a></li>
+                          <li><a class="dropdown-item" href="">Headwears</a></li>
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="#">Contact one of our Agents</a></li>
                         </ul>
-                      </li>
+                      </li> -->
 
                       <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" style="color: black;" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                          Products2
+                          Categories
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                           {% for item in cats %}
-                            <a class="dropdown-item" href="">
-                              {{ item.categoryname }}
+                            <a class="dropdown-item" href="{% url 'allfootwears' %}">
+                              {{ item.categoryname }} {{item.id}}
                             </a>
                           {% endfor %}
 
-                          <li><a class="dropdown-item" href="#">Contact one of our Agents</a></li>
+                          <li><a class="dropdown-item" href="{% url 'contact' %}">Contact one of our Agents</a></li>
                         </ul>
                       </li>
 
@@ -85,15 +85,32 @@
                       <li class="nav-item">
                         <a href="#" class="nav-link">Welcome {{request.user.username}}</a>
                       </li>
-                      <li class="nav-item"><a class="nav-link" style="color: black;" href="">Cart <span>0</span></a></li>
+
                       <li class="nav-item">
-                        <a href="" style="color: black;" class="nav-link">
-                          WishLists (<i class="fa fa-heart"></i><span id="counter">0</span>)
+                      {% comment %} <a class="nav-link" style="color: black;" href="{% url 'cart' %}">Cart <span>0</span></a> {% endcomment %}
+                        <a href="{% url 'cart' %}" class="nav-link" style="color: black;">Cart
+                          <i id="cart-icon" class="fa fa-shopping-cart " aria-hidden="true"></i> 
+                          {% if prodcount > 0 %}
+                          <span class="badge bg-success badge-secondary">
+                            {{ prodcount }}
+                          </span>
+                          {% else %}
+                          <span class="badge badge-secondary">
+                            {{ prodcount }}
+                          </span>
+                          {% endif %}
+                        </a>
+                      </li>
+                      
+                      <li class="nav-item">
+                        <a href="{% url 'wishlist' %}" style="color: black;" class="nav-link">
+                          WishLists (<i class="fa fa-heart"></i><span id="couter">{{ allwishes }}</span>)
                         </a>
                       </li>
                       <li class="nav-item">
                         <a href="{% url 'logout' %}" style="color: black;" class="nav-link">LogOut</a>
                       </li>
+
                     
                       {% else %}
                       <li class="nav-item">
@@ -149,70 +166,3 @@
   </body>
 </html>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="stylesheet" href="{% static 'css/contact.css' %}">
-    <link rel="stylesheet" href="{% static 'css/profile.css' %}"> -->
-    <!-- <title>
-
-    </title>
-</head>
-<body>
-    <header>
-        <div class="topheader">
-            <div class="div1">
-                <a href=""><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
-                <a href="https://wa.me/2348106966584"><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
-                <a href="https://wa.me/2348106966584"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
-                <a href="https://wa.me/2348106966584"><i class="fa fa-phone-square" aria-hidden="true"></i></a>
-              </div>
-              <div class="div2" style="float: right;">
-                <a href="{% url 'contact' %}">Help</a>
-                <a href="{% url 'contact' %}">FAQ</a>
-                <a href="{% url 'contact' %}">Login</a>
-                <a href="{% url 'contact' %}">Register</a>
-              </div>
-        </div>
-        <h2><img src="{% static 'images/clogo1.png' %}" width="100px" alt="chief logo"></h2>
-        <nav>
-            <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'contact' %}">Contact Us</a></li>
-        </nav>
-    </header>
-
-    <main>
-    </main>
-
-    <footer>
-        <h2>This is the general footer</h2>
-    </footer>
-
-</body>
-</html> -->

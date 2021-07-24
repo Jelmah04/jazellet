@@ -5,3 +5,8 @@ from .models import *
 admin.site.register(Category)
 admin.site.register(Product)
 admin.site.register(PayHistory)
+admin.site.register(Orderdetail)
+admin.site.register(ShippingAddress)
+admin.site.register(Customer)
+admin.site.register(Order)
+admin.site.register(Wishlist)

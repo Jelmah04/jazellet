@@ -41,7 +41,7 @@
       {% for items in featured %}
         <div class="eachfp">
             <center>
-            <button class="wishfor" onclick="whyme()" style="color: white; background-color: palevioletred; font-weight: bolder;">Add To WishList</button>
+            {% comment %} <button class="wishfor" onclick="whyme()" style="color: white; background-color: palevioletred; font-weight: bolder;">Add To WishList</button> {% endcomment %}
 
                 <picture>
                 <h5 class="prodname">{{items.prodname}}</h5>
@@ -51,6 +51,25 @@
             <h5 class="category">{{items.category}}</h5>
             <h5 class="price">{{items.price}}</h5>
             <p><a href="{% url 'allfootwears' %}">See more products</a></p>
+            <div>
+              {% comment %} <button class="tocart" data-product="{{items.id}}" data-action="add" >Add To Cart</button> {% endcomment %}
+              {% comment %} <button class="view" type="submit" >View Clearly</button> {% endcomment %}
+
+              <form style="display: inline;" action="{% url 'addtocart' %}" method="POST" >
+                {% csrf_token %}
+                <input type="hidden" name="tayo" value="{{items.id}}">
+                <button type="submit" class="btn-success">Add To Cart</button>
+              </form>
+
+              <form style="display: inline;" action="{% url 'wishpage_func' %}" method="POST" >
+                {% csrf_token %} 
+                <input type="hidden" name="wishitem" value="{{items.id}}">
+                <input type="hidden" name="next" value="{{ request.path }}">
+                <button type="submit" class="btn-primary">
+                  WishList <i id="cart-icon" class="fa fa-heart" aria-hidden="true"></i> 
+                </button>
+            </form>
+            </div>
         </div>
       {% endfor %}
     {% endif %}
@@ -64,5 +83,3 @@
 </section>
 
 {% endblock main %}
-
-

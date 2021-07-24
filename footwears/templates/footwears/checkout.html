@@ -1,0 +1,112 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+{% load humanize %}
+
+
+{% block title %}
+Shopping Cart
+{% endblock title %}
+
+
+{% block main %}
+<section>
+  <div class="container">
+    <h3 class="text-center mt-5">Checkout </h3>
+    <div class="row">
+      <div class="col-sm-7">
+       <h4>Shipping Address</h4>
+       {% if shippingaddrest %}
+        {% for item in shippingaddrest %}
+          <input type="radio" name="ship_in_addr" id=""> <span style="margin-right: 10px;"> {{item.theaddress}}</span><br>
+        {% endfor %}
+       {% endif %} <br>
+            
+            <a href="">Add a new Shipping Address</a>
+       <br><br>
+
+        <div id="ship_addr">
+          <h4>Fill in your shipping address</h4>
+          <form action="{% url 'addaddress' %}" method="post">
+            {% csrf_token %}
+            <label for="shippingaddress" class="shipadd"> Your Address</label><input type="text" name="location" id=""><br><br>
+            <label for="current" class="shipadd"> Is this your current location</label><input type="checkbox" name="current" id=""><br><br>  
+            <button type="submit">Save Address</button>
+          </form>
+        </div>
+
+      </div>
+      <div class="col-sm-5">
+       <h4>Order Summary</h4>
+       <ul>
+         
+         {% if orderdetail %}
+         <li>
+           <table class="table table-hover">
+             <thead>
+               <tr>
+                 <th scope="col">Product</th>
+                 <th scope="col">Price</th>
+                 <th scope="col">Quantity</th>
+                </tr>
+              </thead>
+              {% for item in orderdetail %}
+               <tbody>
+                 <tr>
+                  <td> {{item.product_name}} </td>
+                  <td> {{item.product_unitprice}} </td>
+                  <td> {{item.quantity}} </td>
+                 </tr>
+               </tbody>
+               {% endfor %}
+             </table>
+         </li>
+           <h4>Total Amount: {{ totalamount }}</h4>
+         {% endif %}
+           
+       </ul>
+      </div>
+    </div>
+    <h3 class="text-center mt-5">Make Payment </h3>
+    <form id="payform">
+      <div class="topay">
+          <center>
+              <button type="submit" id="btnPay" style="width: 30%; margin:0 auto;" class="btn btn-success">Make Payment</button>
+              </center>
+          <input type="hidden" id="email" value="user.email" required><br><br>
+          <input type="hidden" id="price" value="{{ totalamount }}" required><br><br>
+      </div>
+  </form>
+  </div>
+
+</section>
+
+
+<script src="/static/js/jquery.min.js"></script>
+
+<script>
+    $("#payform").on("submit", function(e){
+        e.preventDefault();
+        $.ajax({
+            url: "{% url 'init_payment' %}",
+            type: 'POST',
+            data: {
+                email: '{{ user.email }}',
+                amount: '{{ totalamount }}',
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                dataType: "json",
+            },
+            beforeSend: function(){
+                console.log("Ready");
+                $("#btnPay").attr("disabled", "disabled");
+            },
+            success: function(resp){
+                window.location.href = resp.link;
+            },
+            error: function(){
+                $("#btnPay").removeAttr("disabled");
+            }
+        });
+    });
+    
+</script>
+{% endblock main %}

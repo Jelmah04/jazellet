@@ -1,9 +1,11 @@
+from django.shortcuts import redirect, render
 import requests
 import json
 from django.http import HttpResponseRedirect
 from jazellet import settings
 from decimal import Decimal
 from .models import *
+
 
 def init_payment(email,amount):
     amount = Decimal(amount)*100 # multiply the amount by 100. (from Kobo to Naira)
@@ -23,3 +25,5 @@ def init_payment(email,amount):
     else:
         results = x.json()
         return results
+    
+

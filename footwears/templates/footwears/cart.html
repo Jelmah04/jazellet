@@ -1,0 +1,84 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+{% load humanize %}
+
+
+{% block title %}
+ Jazellet|footwears_cart_page
+{% endblock title %}
+
+
+{% block main %}
+<section>
+  <div class="container">
+    <h3 class="text-center mt-5">The Cart</h3>
+    <div class="row">
+      <div class="col-sm-12">
+       {% if allitems %}
+       <table class="table table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Product</th>
+            <th scope="col">Image</th>
+            <th scope="col">Unit Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Total price</th>
+            <th scope="col">Order Status</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          {% for item in allitems %}
+          <tr>
+            <td>{{item.product_name}}</td>
+            <td>
+              <img src="{{item.product_image.url}}" width="30px" height="25px" alt="...">
+            </td>
+            <td>{{item.product_unitprice | intcomma }}</td>
+            <td>
+              <form class="quantityform" action="{% url 'updatequantity' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                  <input type="number" name="itemquantity" id="item" value="{{ item.quantity }}">
+                  <button type="submit" class="btn btn-primary btn-small">Update Quantity</button>
+                  <input type="hidden" name="itemid" value="{{ item.id }}">
+                </div>
+              </form>
+            </td>
+            <td>{{item.product_unitprice | intcomma }}*{{item.quantity}}</td>
+            <td>
+              <form action="{% url 'removefromcart'  %}" method="post"> 
+                {% csrf_token %}
+                <button class="btn btn-danger">Remove</button>
+                <input type="hidden" name="deleteTarget" value="{{ item.id }}"> 
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+          <tr>
+            <td></td>
+            <td>
+
+            </td>
+            <td colspan=3>
+             <!-- <a class="btn btn-success">Checkout</a> Total Amount: N{{ totalamount | floatformat:2 | intcomma }} -->
+             <a class="btn btn-success" href="{% url 'checkout' q=allitems.0.order_number %}">Checkout</a> Total Amount: N{{ totalamount | floatformat:2 | intcomma }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+       {% else %}
+         <p>
+           <h4 class="bg-danger text-white p-4 ">No item in your Cart</h4>
+         </p>
+       {% endif %}
+       
+      </div>
+    </div>
+  </div>
+
+</section>
+<br><br><br><br><br>
+{% endblock main %}
+
+

@@ -7,7 +7,6 @@ from django.contrib.auth.models import User
 class Category(models.Model):
   categoryname = models.CharField(max_length=150)
   description = models.TextField()
-  # categoryimage = models.CharField(max_length=150, default='default.jpg')
   categoryimage = models.ImageField(default='default.jpg')
   
   def __str__(self):
@@ -24,7 +23,6 @@ class Product(models.Model):
   prodname = models.CharField(max_length=150)
   featured = models.BooleanField(default=False)
   prodimage = models.ImageField(default='default.jpg',null=True,blank=True)
-  # prodimage = models.CharField(max_length=150, default='default.jpg')
   price = models.FloatField(null=True,blank=True)
   instock = models.BooleanField(default=True)
   quantity_instock = models.IntegerField(default=20)
@@ -60,3 +58,92 @@ class PayHistory(models.Model):
 
 	def __str__(self):
 		return self.user.username
+
+
+# orderdetail # cart and container for order details
+class Orderdetail(models.Model):
+  product = models.ForeignKey(Product,on_delete=models.DO_NOTHING,null=True,blank=True)
+  product_image = models.ImageField(default='default.jpg',null=True,blank=True)
+  order_number = models.CharField(max_length=70)
+  product_name = models.CharField(max_length=50)
+  product_unitprice = models.FloatField(null=True,blank=True)
+  quantity = models.IntegerField(default=1)
+  user = models.ForeignKey(User,on_delete=models.CASCADE)
+  order_placed = models.BooleanField(default=False)
+  date = models.DateTimeField(auto_now_add=True)
+
+
+  def __str__(self):
+    return f'{self.user.username} ============> {self.product_name} ===========> {self.order_number}'
+
+  class Meta:
+    db_table = 'orderdetails'
+    managed = True
+    verbose_name = 'Orderdetail'
+    verbose_name_plural = 'Orderdetails'
+
+
+# customer # user profile
+class Customer(models.Model):
+  mobiles = models.CharField(max_length=150)
+  user = models.ForeignKey(User,on_delete=models.DO_NOTHING)
+
+  def __str__(self):
+    return self.user.username
+
+  class Meta:
+    db_table = 'customers'
+    managed = True
+    verbose_name = 'Customer'
+    verbose_name_plural = 'Customers'
+
+
+# Shipping Address
+class ShippingAddress(models.Model):
+  theaddress = models.TextField(max_length=450)
+  mycurrent = models.BooleanField(default=False)
+  customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
+
+  def __str__(self):
+    return self.theaddress
+
+  class Meta:
+    db_table = 'shippingaddresses'
+    managed = True
+    verbose_name = 'ShippingAddress'
+    verbose_name_plural = 'ShippingAddresss'
+
+
+# order
+class Order(models.Model):
+  order_number = models.CharField(max_length=70)
+  total_amount = models.FloatField()
+  confirmation_status = models.BooleanField(default=False)
+  delivery_status = models.BooleanField(default=False)
+  customer = models.ForeignKey(Customer,on_delete=models.DO_NOTHING)
+
+  def __str__(self):
+    return self.user.username
+
+  class Meta:
+    db_table = 'orders'
+    managed = True
+    verbose_name = 'Order'
+    verbose_name_plural = 'Orders'
+
+
+class Wishlist(models.Model):
+  product = models.ForeignKey(Product,on_delete=models.CASCADE)
+  customer = models.ForeignKey(Customer,on_delete = models.CASCADE)
+  date_created = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+  now_bought = models.BooleanField(default=False)
+  user = models.ForeignKey(User,on_delete = models.CASCADE)
+
+  def __str__(self):
+    return self.user.username
+
+  class Meta:
+    db_table = 'wishlists'
+    managed = True
+    verbose_name = 'Wishlist'
+    verbose_name_plural = 'Wishlists'

@@ -18,7 +18,7 @@
 
 {% block main %}
 <section class="afwsec1">
-  <h3 style="text-align: center;">Footwear Products</h3>
+  <h3 style="text-align: center;">Our Products</h3>
   <h5 style="text-align: center;">Lorem ipsum dolor sit, Ullam saepe at libero numquam enim commodi iure reiciendis, aspernatur voluptates.</h5>
   
   <div class="featuredprod">
@@ -33,8 +33,26 @@
             <h5 class="prodname">Prodname: {{item.prodname}}</h5>
             <h5 class="category">Category: {{item.category}}</h5>
             <h5 class="price">Price: {{item.price}}</h5>
-            <button class="wishfor" onclick="whyme()" style="color: white; background-color: palevioletred; font-weight: bolder;">Add To WishList</button>
+            <!-- <button class="wishfor" onclick="whyme()" style="color: white; background-color: palevioletred; font-weight: bolder;">Add To WishList</button> -->
             <p><a href="{% url 'single' item.id %}">View Details</a></p>
+            <div>
+              <!-- <button class="addtocart" data-product="{{item.id}}" data-action="add" >Add To Cart</button> -->
+              <button class="view btn-dark" ><a style="color: white; text-decoration: none;" href="{% url 'single' item.id %}">View Clearly</a></button>
+              <form style="display: inline;" action="{% url 'addtocart' %}" method="POST" >
+                {% csrf_token %}
+                <input type="hidden" name="tayo" value="{{item.id}}">
+                <button type="submit" class="btn-success">Add To Cart</button>
+              </form>
+
+              <form style="display: inline;" action="{% url 'wishpage_func' %}" method="POST" >
+                {% csrf_token %} 
+                <input type="hidden" name="wishitem" value="{{item.id}}">
+                <input type="hidden" name="next" value="{{ request.path }}">
+                <button type="submit" class="btn-primary">
+                  WishList <i id="cart-icon" class="fa fa-heart" aria-hidden="true"></i> 
+                </button>
+            </form>
+            </div>
         </div>
       {% endfor %}
     {% endif %}
