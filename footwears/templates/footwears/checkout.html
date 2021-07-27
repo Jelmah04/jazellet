@@ -9,36 +9,48 @@ Shopping Cart
 
 
 {% block main %}
+
 <section>
   <div class="container">
-    <h3 class="text-center mt-5">Checkout </h3>
+    <h3 class="text-center mt-5">Checkout</h3>
     <div class="row">
       <div class="col-sm-7">
        <h4>Shipping Address</h4>
        {% if shippingaddrest %}
         {% for item in shippingaddrest %}
-          <input type="radio" name="ship_in_addr" id=""> <span style="margin-right: 10px;"> {{item.theaddress}}</span><br>
+          <div class="addresstv">{{item.theaddress}}------>{{item.themobiles}}</div><br>
+          <a href="{% url 'changeaddress' %}">Change this Shipping Address</a>
         {% endfor %}
-       {% endif %} <br>
-            
-            <a href="">Add a new Shipping Address</a>
-       <br><br>
+        {% else %}
 
+        
         <div id="ship_addr">
-          <h4>Fill in your shipping address</h4>
+          <h6>Fill in your shipping details</h6>
           <form action="{% url 'addaddress' %}" method="post">
             {% csrf_token %}
-            <label for="shippingaddress" class="shipadd"> Your Address</label><input type="text" name="location" id=""><br><br>
-            <label for="current" class="shipadd"> Is this your current location</label><input type="checkbox" name="current" id=""><br><br>  
-            <button type="submit">Save Address</button>
+            <div class="form-group">
+              <label for="mobilenumber" class="shipadd">Mobile number</label>
+              <input width="60%" class="form-control" type="tel" name="mobilenumber" id="mobilenumber">
+            </div>
+            <div class="form-group">
+              <label for="current_address" class="shipadd">Current Address</label><br>
+              <textarea name="current_address" id="current_address" cols="45" rows="2"></textarea>
+            </div>
+            <input type="hidden" name="customername" value="request.user.username">
+            
+            <br>
+            <button type="submit" class="btn btn-success">Submit</button>
           </form>
         </div>
-
+        {% endif %} <br>
       </div>
+      
       <div class="col-sm-5">
-       <h4>Order Summary</h4>
-       <ul>
-         
+        <center>
+          <h4>Order Summary</h4>
+        </center>
+
+       <ul> 
          {% if orderdetail %}
          <li>
            <table class="table table-hover">
@@ -61,19 +73,24 @@ Shopping Cart
              </table>
          </li>
            <h4>Total Amount: {{ totalamount }}</h4>
+         {% else %}
+         <center>
+           <p>
+             <h4 class="bg-danger text-white p-3 ">No item in your Orderdetail</h4>
+           </p>
+          </center>
          {% endif %}
-           
        </ul>
       </div>
     </div>
-    <h3 class="text-center mt-5">Make Payment </h3>
-    <form id="payform">
+    <h4 class="text-center mt-6">Make Payment </h4>
+    <form id="payform" method="POST" action="{% url 'order' %}">
       <div class="topay">
           <center>
               <button type="submit" id="btnPay" style="width: 30%; margin:0 auto;" class="btn btn-success">Make Payment</button>
-              </center>
-          <input type="hidden" id="email" value="user.email" required><br><br>
-          <input type="hidden" id="price" value="{{ totalamount }}" required><br><br>
+              <input type="hidden" id="email" value="user.email" required><br>
+              <input type="hidden" id="price" value="{{ totalamount }}" required><br>
+          </center>
       </div>
   </form>
   </div>

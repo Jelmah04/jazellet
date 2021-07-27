@@ -11,7 +11,16 @@
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{% url 'home' %}">Home </li>
-            <li class="breadcrumb-item"><a href="{% url 'allfootwears' %}"> /  All products</a></li>
+            <!-- <li class="breadcrumb-item">
+              {% if cats %}
+                <a class="dropdown-item" href="{% url 'allfootwears' cat_id=cats.0.categoryname %}">
+                  /  All products
+                </a>
+              {% endif %}
+                
+            </li> -->
+            <li class="breadcrumb-item"><a href=""> /  All products</a></li>
+            <!-- {% comment %} <li class="breadcrumb-item"><a href="{% url 'allfootwears' %}"> /  All products</a></li> {% endcomment %} -->
             <li class="breadcrumb-item active" aria-current="page">Single detail</li>
         </ol>
     </nav>

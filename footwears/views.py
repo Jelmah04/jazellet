@@ -7,7 +7,7 @@ import requests
 from django.conf import settings
 
 from django.http import response
-from django.http.response import JsonResponse
+from django.http.response import HttpResponseBadRequest, HttpResponseRedirectBase, JsonResponse
 from django.http import HttpResponseRedirect
 from .payment import init_payment
 from django.shortcuts import render
@@ -35,9 +35,9 @@ def home(request):
 def contact(request):
     return render(request, 'footwears/contact.html')
 
-def allfootwears(request):
+def allfootwears(request,cat_id):
     # print(cat_id)
-    products = Product.objects.all()
+    products = Product.objects.filter(category__categoryname = cat_id)
     context = {
         'products' : products
     }
@@ -82,6 +82,20 @@ def register(request):
     return render (request, 'registration/register.html', context)
 
 
+# The view function to create an order before payment and delete its detail from orderdetail
+def order(request):
+    # print('About to make an order again')
+    if request.is_ajax():
+        amount = request.POST['amount']
+        mycustomer=request.user.username
+        ordercustomer = Customer.objects.get(user__username=request.user.username)
+        ordernum = Orderdetail.objects.filter(user__username=mycustomer).first()
+        fresh_order = Order.objects.create(order_number=ordernum.order_number, total_amount=amount, confirmation_status=False, delivery_status=False, customer=ordercustomer)
+        fresh_order.save()
+        # delete order from orderdetails
+        Orderdetail.objects.filter(order_placed=False).filter(user__username=request.user.username).delete()
+    return redirect('home')
+
 # Initialise Payment with Paystack
 def initialize(request):
 	if request.is_ajax():
@@ -98,11 +112,11 @@ def initialize(request):
 			# Save Reference Code with product details to Database
 			# pay['data']['reference']
 			return JsonResponse(msg)
-        # Order.objects.create()
+        # return redirect('order')
         
 
 def cart_view(request):
-	allitems = Orderdetail.objects.filter(order_placed=False).filter(user__username=request.user.username)
+	allitems = Orderdetail.objects.filter(order_placed=False).filter(user__username=request.user.username).order_by('id').reverse()
 	total_amount = 0
 
 	for item in allitems:
@@ -138,7 +152,7 @@ def removefromcart(request):
 def addtocart(request):
   # theproduct = Product.objects.get(pk=prod_id)
   if request.method == 'POST':
-    theprodid = request.POST['tayo']
+    theprodid = request.POST['add_to_cart']
     aprod = Product.objects.get(pk=theprodid)
     #check if the user has an existing cart
     cart = Orderdetail.objects.filter(order_placed=False).filter(user__username = request.user.username)
@@ -171,7 +185,7 @@ def checkout(request,q):
     items = Orderdetail.objects.filter(order_number__iexact=q).filter(user__username__iexact=request.user.username)
     thecust = Customer.objects.filter(user__username__iexact=request.user.username).first()
     # shipaddress = ShippingAddress.objects.filter(mycurrent__exact=True).filter(customer__user__username__iexact=request.user.username).first()
-    shipaddrest = ShippingAddress.objects.all().filter(customer__user__username__iexact=request.user.username)
+    shipaddrest = ShippingAddress.objects.filter(customer__user__username__iexact=request.user.username)
 
     total_amount = 0
     for x in items:
@@ -187,36 +201,35 @@ def checkout(request,q):
     return render(request,'footwears/checkout.html',context)
 
 
-class Verify_Payment(APIView):
-	def get(self, request):
-		user = request.user
-		reference = request.GET.get("reference")
-		url = 'https://api.paystack.co/transaction/verify/'+reference
-		headers = {
-			"Authorization": "Bearer " +settings.PAYSTACK_SECRET_KEY
-		}
-		x = requests.get(url, headers=headers)
-		if x.json()['status'] == False:
-			return False
-		results = x.json()
-		if results['data']['status'] == 'success':
-			Order.objects.create(
-				customer=user, 
-				order_number=results["data"]["reference"],
-				total_amount=results["data"]["amount"], 
-                confirmation_status=True,
-                delivery_status=False
-			)
-		else:
-			Order.objects.create(
-				customer=user, 
-				order_number=results["data"]["reference"],
-				total_amount=results["data"]["amount"], 
-                confirmation_status=False,
-                delivery_status=False
-			)
-
-		return Response(results)
+# class Verify_Payment(APIView):
+# 	def get(self, request):
+# 		user = request.user
+# 		reference = request.GET.get("reference")
+# 		url = 'https://api.paystack.co/transaction/verify/'+reference
+# 		headers = {
+# 			"Authorization": "Bearer " +settings.PAYSTACK_SECRET_KEY
+# 		}
+# 		x = requests.get(url, headers=headers)
+# 		if x.json()['status'] == False:
+# 			return False
+# 		results = x.json()
+# 		if results['data']['status'] == 'success':
+# 			Order.objects.create(
+# 				customer=user, 
+# 				order_number=results["data"]["reference"],
+# 				total_amount=results["data"]["amount"], 
+#                 confirmation_status=True,
+#                 delivery_status=False
+# 			)
+# 		else:
+# 			Order.objects.create(
+# 				customer=user, 
+# 				order_number=results["data"]["reference"],
+# 				total_amount=results["data"]["amount"], 
+#                 confirmation_status=False,
+#                 delivery_status=False
+# 			)
+# 		return Response(results)
 
 
 # def webhook (request):
@@ -271,9 +284,23 @@ def wishpage_func(request):
 
 def addaddress(request):
     if request.method == 'POST':
-        collect = request.POST['location']
-        customer = Customer.objects.get(user=request.user)
-        newlocation = ShippingAddress.objects.create(theaddress=collect, mycurrent=False, customer=customer)
+        collectnumber = request.POST['mobilenumber']
+        collectaddress = request.POST['current_address']
+        customer = Customer.objects.get(user__username=request.user.username)
+        newlocation = ShippingAddress.objects.create(theaddress=collectaddress, themobiles=collectnumber, customer=customer)
         newlocation.save()
-    # return HttpResponseRedirect
+    return redirect('http://localhost/checkout/3587c89b-7cfb-4951-afc6-ca8e74daf8f9/')
+    # return HttpResponseRedirect('http://localhost/checkout/3587c89b-7cfb-4951-afc6-ca8e74daf8f9/')
+    # return HttpResponseRedirectBase('checkout/')
+    # return HttpResponseBadRequest()
     # return redirect('checkout')
+
+def changeaddress(request):
+    oldlocation = ShippingAddress.objects.filter(customer__user__username__iexact=request.user.username).delete()
+    return HttpResponseRedirect('http://localhost/checkout/3587c89b-7cfb-4951-afc6-ca8e74daf8f9/')
+    ## An error that needed to be fixed
+    ### [get() missing 1 required positional argument: 'header'] 
+
+
+def customerform(request):
+    return render(request, 'footwears/customerform.html')

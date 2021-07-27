@@ -1,0 +1,40 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+
+
+{% block title %}
+    CustomerForm
+{% endblock title %}
+
+
+{% block main %}
+<section>
+    <center>
+  <div class="container">
+    <h1>Customer Form</h1><br><br><br>
+    <div class="">
+      <div class="col-md-6">
+        <form action="{% url 'customerform' %}" method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="mobilenumber">Mobile number</label>
+            <input class="form-control" type="text" name="mobilenumber" id="mobilenumber">
+          </div>
+          <div class="form-group">
+            <label for="current_address">Current Address</label>
+            <input class="form-control" type="text" name="current_address" id="current_address">
+          </div>
+          <input type="hidden" name="customername" value="request.user.username">
+
+          <!-- <input type="hidden" name="next" value="{{ request.path }}"> -->
+          <br><br>
+          <button type="submit" class="btn btn-success">Submit</button>
+        </form><br>
+        <!-- <h5>Create a new account ......? <a href="">Sign up</a></h5> -->
+        <br><br>
+      </div>
+    </div>
+  </div>
+</center>
+</section>
+{% endblock main %}

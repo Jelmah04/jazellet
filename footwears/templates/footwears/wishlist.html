@@ -19,6 +19,7 @@
             <thead class="thead-dark">
             <tr>
                 <th scope="col">Product</th>
+                <th scope="col">Image</th>
                 <th scope="col">Price</th>
                 <th scope="col">Add to Cart</th>
                 <th scope="col">Remove</th>
@@ -29,12 +30,15 @@
             {% for item in wishlist %}
             <tr>
                 <td> {{item.product}} </td>
+                <td>
+                    <img src="{{item.product.prodimage.url}}" width="30px" height="25px" alt="...">
+                </td>
                 <td> {{item.product.price}} </td>
                 <td> 
                   <form  class="form-inline" action="{% url 'addtocart' %}" method="POST">
                       {% csrf_token %}
                     <button class="btn btn-success" type="submit">Add To Cart</button>
-                    <input type="hidden" name="tayo" value="{{ item.product.id }}">
+                    <input type="hidden" name="add_to_cart" value="{{ item.product.id }}">
                   </form>
                 </td>
                 <td>

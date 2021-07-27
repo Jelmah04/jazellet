@@ -85,7 +85,8 @@ class Orderdetail(models.Model):
 
 # customer # user profile
 class Customer(models.Model):
-  mobiles = models.CharField(max_length=150)
+  mobiles = models.CharField(max_length=150, null=True, blank=False, default='08111111111')
+  address = models.TextField(max_length=450, null=True, blank=False, default='nigeria')
   user = models.ForeignKey(User,on_delete=models.DO_NOTHING)
 
   def __str__(self):
@@ -101,6 +102,7 @@ class Customer(models.Model):
 # Shipping Address
 class ShippingAddress(models.Model):
   theaddress = models.TextField(max_length=450)
+  themobiles = models.CharField(max_length=150, null=True, blank=False, default='08111111111')
   mycurrent = models.BooleanField(default=False)
   customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
 
@@ -121,9 +123,10 @@ class Order(models.Model):
   confirmation_status = models.BooleanField(default=False)
   delivery_status = models.BooleanField(default=False)
   customer = models.ForeignKey(Customer,on_delete=models.DO_NOTHING)
+  location_to_ship_to = models.CharField(max_length=2000, default='number 1, Imise road, Onihale, Ifo, Oyostate')
 
   def __str__(self):
-    return self.user.username
+    return self.customer.user.username
 
   class Meta:
     db_table = 'orders'

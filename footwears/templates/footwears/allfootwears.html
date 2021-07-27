@@ -40,7 +40,7 @@
               <button class="view btn-dark" ><a style="color: white; text-decoration: none;" href="{% url 'single' item.id %}">View Clearly</a></button>
               <form style="display: inline;" action="{% url 'addtocart' %}" method="POST" >
                 {% csrf_token %}
-                <input type="hidden" name="tayo" value="{{item.id}}">
+                <input type="hidden" name="add_to_cart" value="{{item.id}}">
                 <button type="submit" class="btn-success">Add To Cart</button>
               </form>
 

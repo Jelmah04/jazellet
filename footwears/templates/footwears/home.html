@@ -41,8 +41,7 @@
       {% for items in featured %}
         <div class="eachfp">
             <center>
-            {% comment %} <button class="wishfor" onclick="whyme()" style="color: white; background-color: palevioletred; font-weight: bolder;">Add To WishList</button> {% endcomment %}
-
+            <!-- {% comment %} <button class="wishfor" onclick="whyme()" style="color: white; background-color: palevioletred; font-weight: bolder;">Add To WishList</button> {% endcomment %} -->
                 <picture>
                 <h5 class="prodname">{{items.prodname}}</h5>
                 <img src="{{items.prodimage.url}}" width="280px" height="200px" alt="...">
@@ -50,14 +49,15 @@
             </center>
             <h5 class="category">{{items.category}}</h5>
             <h5 class="price">{{items.price}}</h5>
-            <p><a href="{% url 'allfootwears' %}">See more products</a></p>
+            <p><a href="{% url 'allfootwears' items.category %}">See more products</a></p>
+            <!-- <p><a href="{% url 'allfootwears' items.id %}">See more products</a></p> -->
             <div>
-              {% comment %} <button class="tocart" data-product="{{items.id}}" data-action="add" >Add To Cart</button> {% endcomment %}
-              {% comment %} <button class="view" type="submit" >View Clearly</button> {% endcomment %}
+              <!-- {% comment %} <button class="tocart" data-product="{{items.id}}" data-action="add" >Add To Cart</button> {% endcomment %}
+              {% comment %} <button class="view" type="submit" >View Clearly</button> {% endcomment %} -->
 
               <form style="display: inline;" action="{% url 'addtocart' %}" method="POST" >
                 {% csrf_token %}
-                <input type="hidden" name="tayo" value="{{items.id}}">
+                <input type="hidden" name="add_to_cart" value="{{items.id}}">
                 <button type="submit" class="btn-success">Add To Cart</button>
               </form>
 
