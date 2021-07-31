@@ -1,5 +1,4 @@
 venv
-env
 *migrations
 /migrations/
 migrations/
@@ -9,7 +8,5 @@ migrations/*
 */migrations/*
 migrations/*
 
-*__pycache__
-__pycache__
-db.sqlite3
-manage.py
+# db.sqlite3
+# manage.py
