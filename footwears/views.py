@@ -1,3 +1,4 @@
+from django.core import mail
 from footwears.context_processor import categories
 from rest_framework import response
 from rest_framework.views import APIView
@@ -5,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 import requests
 from django.conf import settings
+from django.core.mail import send_mail
 
 from django.http import response
 from django.http.response import HttpResponseBadRequest, HttpResponseRedirectBase, JsonResponse
@@ -33,6 +35,28 @@ def home(request):
     return render(request, 'footwears/home.html', context)
 
 def contact(request):
+    if request.method=='POST':
+        name =request.POST['name'] 
+        email =request.POST['email'] 
+        phone =request.POST['phone'] 
+        subject =request.POST['subject'] 
+        message =request.POST['message'] 
+
+        save_message = Contact.objects.create(name=name, email=email, phone=phone, subject=subject, message=message)
+        save_message.save()
+
+        # send mail
+        send_mail(
+            subject,
+            message,
+            email,
+            ['jelmah04@gmail.com'],
+            fail_silently=True
+        )
+        # this message should be in a set interval/timeout function 
+        messages.success(request, 'We have received your message, you will get a response shortly via your email.')
+        return redirect('home')
+
     return render(request, 'footwears/contact.html')
 
 def allfootwears(request,cat_id):
@@ -65,13 +89,13 @@ def register(request):
             # added this for error message
             if user :
                 login(request,user)
-                return redirect('home')
+                return redirect('login')
             else :
                 messages.error(request,'There is something wrong with your input, please check through and get back to us!')
                 return redirect ('contact')
        else:
             # print('Form not valid')
-            messages.error(request,'There is lot wrong with your input, please check through and get back to us!')
+            messages.error(request,'Your form inputs are not valid, please check through and get back to us!')
             return redirect ('register')
 
     else:
@@ -84,35 +108,62 @@ def register(request):
 
 # The view function to create an order before payment and delete its detail from orderdetail
 def order(request):
-    # print('About to make an order again')
+    print('About to make an order again')
     if request.is_ajax():
         amount = request.POST['amount']
         mycustomer=request.user.username
         ordercustomer = Customer.objects.get(user__username=request.user.username)
+        current_address = ShippingAddress.objects.filter(customer=ordercustomer).first()  #just added for location
         ordernum = Orderdetail.objects.filter(user__username=mycustomer).first()
-        fresh_order = Order.objects.create(order_number=ordernum.order_number, total_amount=amount, confirmation_status=False, delivery_status=False, customer=ordercustomer)
+        fresh_order = Order.objects.create(order_number=ordernum.order_number, total_amount=amount, confirmation_status=False, delivery_status=False, customer=ordercustomer,location_to_ship_to =current_address.theaddress, location_call=current_address.themobiles)
         fresh_order.save()
         # delete order from orderdetails
         Orderdetail.objects.filter(order_placed=False).filter(user__username=request.user.username).delete()
-    return redirect('home')
+    return redirect('init_payment')
 
 # Initialise Payment with Paystack
 def initialize(request):
-	if request.is_ajax():
-		amount = request.POST['amount']
-		email = request.POST['email']
-		# Call the endpoint here
-		pay = init_payment(email,amount)
+	# if request.is_ajax():
+    # I need to pass amount value from order function
+    amount = 3000.00                          #request.POST['amount']
+    email = request.user.email                #request.POST['email']
+    # Call the endpoint here
+    pay = init_payment(email,amount)
 
-		if pay['status'] == False:
-			msg = {"Error": "Error. Please try again."}
-			return JsonResponse(msg)
-		else:
-			msg = {"link": pay['data']['authorization_url']}
-			# Save Reference Code with product details to Database
-			# pay['data']['reference']
-			return JsonResponse(msg)
-        # return redirect('order')
+    if pay['status'] == False:
+        msg = {"Error": "Error. Please try again."}
+        print('The payment is not a success, so, am making a history')
+        PayHistory.objects.create(
+            user=request.user, 
+            paystack_charge_id=pay["data"]["reference"],
+            amount=pay["data"]["amount"],
+            purpose="Purchase",
+            status=False,
+            paid=True, 
+        )
+        return JsonResponse(msg)
+    else:
+        msg = {"link": pay['data']['authorization_url']}
+        print(msg)
+        # Save Reference Code with product details to Database
+        # pay['data']['reference']
+        print('The payment is success, so, am making a history')
+        PayHistory.objects.create(
+            user=request.user, 
+            paystack_charge_id=pay["data"]["reference"],
+            # amount=pay["data"]["amount"] * 1.00,
+            # amount=pay['data']['amount'] * 1.00,
+            amount= 3000.00,
+            purpose="Purchase",
+            status=True,
+            paid=True, 
+        )
+        # print('lets update our order model')
+        ordercustomer = Customer.objects.get(user__username=request.user.username)
+        Order.objects.filter(customer=ordercustomer).filter(confirmation_status=False).update(confirmation_status=True)
+        # print('order model updated')
+        return JsonResponse(msg)
+    # return redirect('order')
         
 
 def cart_view(request):
@@ -190,6 +241,7 @@ def checkout(request,q):
     total_amount = 0
     for x in items:
         total_amount += (x.product_unitprice * x.quantity)
+    # total_amount = total_amount
     
     context = {
         'orderdetail':items,
@@ -200,59 +252,6 @@ def checkout(request,q):
     }
     return render(request,'footwears/checkout.html',context)
 
-
-# class Verify_Payment(APIView):
-# 	def get(self, request):
-# 		user = request.user
-# 		reference = request.GET.get("reference")
-# 		url = 'https://api.paystack.co/transaction/verify/'+reference
-# 		headers = {
-# 			"Authorization": "Bearer " +settings.PAYSTACK_SECRET_KEY
-# 		}
-# 		x = requests.get(url, headers=headers)
-# 		if x.json()['status'] == False:
-# 			return False
-# 		results = x.json()
-# 		if results['data']['status'] == 'success':
-# 			Order.objects.create(
-# 				customer=user, 
-# 				order_number=results["data"]["reference"],
-# 				total_amount=results["data"]["amount"], 
-#                 confirmation_status=True,
-#                 delivery_status=False
-# 			)
-# 		else:
-# 			Order.objects.create(
-# 				customer=user, 
-# 				order_number=results["data"]["reference"],
-# 				total_amount=results["data"]["amount"], 
-#                 confirmation_status=False,
-#                 delivery_status=False
-# 			)
-# 		return Response(results)
-
-
-# def webhook (request):
-# 	if request.method == 'POST':
-# 		email = request.POST['email']
-# 		amount = request.POST['prodamount']
-# 		username = request.user.username
-# 		lastname = request.user.last_name
-# 		amount = int(amount)*100
-
-# 		# print(email)print(username)print(lastname)print(amount)
-# 		initialized = init_payment(username, lastname, email, amount)
-# 		print(initialized["data"]["authorization_url"])
-# 		amount = amount/100
-# 		instance = PayHistory.objects.create(amount=amount, user=request.user, paystack_charge_id=initialized['data']['reference'], paystack_access_code=initialized['data']['access_code'])
-
-# 		# wallet = UserWallet.objects.get(user=request.user)
-# 		# old_amt = wallet + amount
-# 		# wallet.save()
-		
-# 		link = initialized['data']['authorization_url']
-# 		return HttpResponseRedirect(link)
-# 	return render (request, 'webhook.html')
 
 @login_required(login_url='login')
 def wishlist(request):
@@ -286,21 +285,44 @@ def addaddress(request):
     if request.method == 'POST':
         collectnumber = request.POST['mobilenumber']
         collectaddress = request.POST['current_address']
-        customer = Customer.objects.get(user__username=request.user.username)
-        newlocation = ShippingAddress.objects.create(theaddress=collectaddress, themobiles=collectnumber, customer=customer)
-        newlocation.save()
-    return redirect('http://localhost/checkout/3587c89b-7cfb-4951-afc6-ca8e74daf8f9/')
-    # return HttpResponseRedirect('http://localhost/checkout/3587c89b-7cfb-4951-afc6-ca8e74daf8f9/')
-    # return HttpResponseRedirectBase('checkout/')
-    # return HttpResponseBadRequest()
-    # return redirect('checkout')
+        customer = Customer.objects.filter(user__username=request.user.username).first()
+        if customer:
+            newlocation = ShippingAddress.objects.create(theaddress=collectaddress, themobiles=collectnumber, customer=customer)
+            newlocation.save()
+        else:
+            # print('This user does not have a customer profile, so lets create one')
+            newcustomer = Customer.objects.create(mobiles=collectnumber, address=collectaddress, user=request.user)
+            newcustomer.save()
+            customer = Customer.objects.filter(user__username=request.user.username).first()
+            newlocation = ShippingAddress.objects.create(theaddress=collectaddress, themobiles=collectnumber, customer=customer)
+            newlocation.save()
+    # print('addaddress')
+    allitem = Orderdetail.objects.filter(order_placed=False).filter(user__username=request.user.username).first()
+    pathe = allitem.order_number
+    return redirect ( 'http://localhost/'+'checkout/'+ pathe)
+    # return redirect('http://localhost/checkout/3587c89b-7cfb-4951-afc6-ca8e74daf8f9/')
 
 def changeaddress(request):
     oldlocation = ShippingAddress.objects.filter(customer__user__username__iexact=request.user.username).delete()
-    return HttpResponseRedirect('http://localhost/checkout/3587c89b-7cfb-4951-afc6-ca8e74daf8f9/')
+    # print('changeaddress')
+    allitem = Orderdetail.objects.filter(order_placed=False).filter(user__username=request.user.username).first()
+    pathe = allitem.order_number
+    return redirect ( 'http://localhost/'+'checkout/'+ pathe)
+    # return redirect('http://localhost/checkout/3587c89b-7cfb-4951-afc6-ca8e74daf8f9/')
     ## An error that needed to be fixed
     ### [get() missing 1 required positional argument: 'header'] 
 
 
-def customerform(request):
-    return render(request, 'footwears/customerform.html')
+def search (request):
+    find = Product.objects.all()
+
+    if 'tosearch' in request.GET:
+        tosearch = request.GET['tosearch']
+        print(tosearch)
+        if tosearch:
+            find = find.filter(description__icontains=tosearch)
+            print(find)
+    context = {
+        'find' : find,
+    }
+    return render(request, 'footwears/search.html', context)

@@ -44,3 +44,20 @@ def initialize(request):
 
 # def register(request):
 #     return render(request, 'footwears/register.html')
+
+
+
+
+
+if results['data']['status'] == 'success':
+	PayHistory.objects.create(
+		user=user, purpose="wallet",
+		paystack_charge_id=results["data"]["reference"],
+		amount=results["data"]["amount"], paid=True, status=True
+	)
+else:
+	PayHistory.objects.create(
+		user=user, purpose="wallet",
+		paystack_charge_id=results["data"]["reference"],
+		amount=results["data"]["amount"], paid=True, status=False
+	)

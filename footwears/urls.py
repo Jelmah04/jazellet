@@ -19,9 +19,6 @@ urlpatterns = [
     path('addaddress/', views.addaddress, name='addaddress'),
     path('changeaddress/', views.changeaddress, name='changeaddress'),
     path('order/', views.order, name='order'),
-    path('customerform/', views.customerform, name='customerform'),
-    # path('webhook/',views.webhook,name='webhook'),
-    # path('verify_transaction/',views.Verify_Payment,name='verify_transaction'),
-    # url(r'^verify_transaction', Verify_Payment.as_view(), name='verify_transaction'),
+    path('search/', views.search, name='search'),
     url(r'initialize_payment/$', views.initialize, name='init_payment'),
 ]

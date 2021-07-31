@@ -27,6 +27,7 @@ class Product(models.Model):
   instock = models.BooleanField(default=True)
   quantity_instock = models.IntegerField(default=20)
   category = models.ForeignKey(Category,on_delete=models.CASCADE)
+  description = models.TextField(max_length=2000, null=True,blank=True, default="This is one of the amazing product you can get from Jazellet online luxury market \n Quality material at affordable price.")
 
   def __str__(self):
     return self.prodname
@@ -43,7 +44,7 @@ class Product(models.Model):
 # Pay History
 class PayHistory(models.Model):
 	pur = (
-		("shoes", "shoe"),
+		("purchase", "purchase"),
 		("headwear", "headwear"),
 		("other", "Other")
 	)
@@ -51,7 +52,7 @@ class PayHistory(models.Model):
 	paystack_charge_id = models.CharField(max_length=100, default='', blank=True)
 	paystack_access_code = models.CharField(max_length=100, default='', blank=True)
 	amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-	purpose = models.CharField(max_length=100, default='Product', choices=pur)
+	purpose = models.CharField(max_length=100, default='Purchase', choices=pur)
 	status = models.CharField(max_length=100, default='')
 	paid = models.BooleanField(default=False)
 	date = models.DateTimeField(auto_now_add=True)
@@ -124,6 +125,7 @@ class Order(models.Model):
   delivery_status = models.BooleanField(default=False)
   customer = models.ForeignKey(Customer,on_delete=models.DO_NOTHING)
   location_to_ship_to = models.CharField(max_length=2000, default='number 1, Imise road, Onihale, Ifo, Oyostate')
+  location_call = models.CharField(max_length=30, default='081111111')
 
   def __str__(self):
     return self.customer.user.username
@@ -150,3 +152,14 @@ class Wishlist(models.Model):
     managed = True
     verbose_name = 'Wishlist'
     verbose_name_plural = 'Wishlists'
+
+class Contact(models.Model):
+  name = models.CharField(max_length=50)
+  email = models.EmailField()
+  phone = models.CharField(max_length=11)
+  subject = models.CharField(max_length=250)
+  message = models.TextField(max_length=2000)
+  date = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+    return self.name

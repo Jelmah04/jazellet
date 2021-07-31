@@ -3,76 +3,49 @@
 
 
 {% block title %}
- Jazellet || footwears of all kinds
+ Jazellet || search result
 {% endblock title %}
 
 
 {% block breadcrumb %}
     <nav>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Homepage</li>
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Footwears</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Search</li>
         </ol>
     </nav>
 {% endblock breadcrumb %}
 
 {% block main %}
-
-        <div >      
-          {% if messages %}
-            {% for item in messages %}
-                <p style="background-color: rgb(105, 236, 105); color: black; padding: 5px 15px; border-radius: 1px;"> {{ item }} </p>
-            {% endfor %} 
-          {% endif %}
-        </div>
-
-  <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img src="{% static 'images/banner.jpg' %}" class="d-block w-100" height="350px" alt="...">
-      </div>
-      <div class="carousel-item">
-        <img src="{% static 'images/banner2.jpg' %}" class="d-block w-100" height="350px" alt="...">
-      </div>
-      <div class="carousel-item">
-        <img src="{% static 'images/banner3.jpg' %}" class="d-block w-100" height="350px" alt="...">
-      </div>
-    </div>
-  </div>
-
-<section class="sec2">
-  <h3 style="text-align: center;">Featured Products</h3>
+<section class="afwsec1">
+  <h3 style="text-align: center;">Search Result</h3>
   <h5 style="text-align: center;">Lorem ipsum dolor sit, Ullam saepe at libero numquam enim commodi iure reiciendis, aspernatur voluptates.</h5>
   
   <div class="featuredprod">
-    
-    {% if featured %}
-      {% for items in featured %}
+    {% if find %}
+      {% for item in find %}
         <div class="eachfp">
             <center>
-            <!-- {% comment %} <button class="wishfor" onclick="whyme()" style="color: white; background-color: palevioletred; font-weight: bolder;">Add To WishList</button> {% endcomment %} -->
                 <picture>
-                <h5 class="prodname">{{items.prodname}}</h5>
-                <img src="{{items.prodimage.url}}" width="280px" height="200px" alt="...">
+                    <img src="{{item.prodimage.url}}" width="280px" height="200px" alt="...">
                 </picture>
             </center>
-            <h5 class="category">{{items.category}}</h5>
-            <h5 class="price">{{items.price}}</h5>
-            <p><a href="{% url 'allfootwears' items.category %}">See more products</a></p>
-            <!-- <p><a href="{% url 'allfootwears' items.id %}">See more products</a></p> -->
+            <h5 class="prodname">Prodname: {{item.prodname}}</h5>
+            <h5 class="category">Category: {{item.category}}</h5>
+            <h5 class="price">Price: {{item.price}}</h5>
+            <p><a href="{% url 'single' item.id %}">View Details</a></p>
             <div>
-              <!-- {% comment %} <button class="tocart" data-product="{{items.id}}" data-action="add" >Add To Cart</button> {% endcomment %}
-              {% comment %} <button class="view" type="submit" >View Clearly</button> {% endcomment %} -->
-
+              <button class="view btn-dark" ><a style="color: white; text-decoration: none;" href="{% url 'single' item.id %}">View Clearly</a></button>
               <form style="display: inline;" action="{% url 'addtocart' %}" method="POST" >
                 {% csrf_token %}
-                <input type="hidden" name="add_to_cart" value="{{items.id}}">
+                <input type="hidden" name="add_to_cart" value="{{item.id}}">
                 <button type="submit" class="btn-success">Add To Cart</button>
               </form>
 
               <form style="display: inline;" action="{% url 'wishpage_func' %}" method="POST" >
                 {% csrf_token %} 
-                <input type="hidden" name="wishitem" value="{{items.id}}">
+                <input type="hidden" name="wishitem" value="{{item.id}}">
                 <input type="hidden" name="next" value="{{ request.path }}">
                 <button type="submit" class="btn-primary">
                   WishList <i id="cart-icon" class="fa fa-heart" aria-hidden="true"></i> 
@@ -82,7 +55,6 @@
         </div>
       {% endfor %}
     {% endif %}
-    
   </div>
 </section>
 
@@ -92,3 +64,5 @@
 </section>
 
 {% endblock main %}
+
+

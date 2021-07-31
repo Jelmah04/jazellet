@@ -145,3 +145,18 @@ PAYSTACK_PUBLIC_KEY = 'pk_test_f9d521d0cf9be5abb26d59e9d6340b759183a40e'
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = '/'
+
+# Email Config
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'jelmah04@gmail.com'
+# EMAIL_HOST_PASSWORD = 'jelolo123'
+# EMAIL_USE_TLS = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'jelmah04@gmail.com'
+EMAIL_HOST_PASSWORD = 'jelolo123'
+DEFAULT_FROM_EMAIL = '<anything you want>'

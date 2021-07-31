@@ -18,8 +18,8 @@ Shopping Cart
        <h4>Shipping Address</h4>
        {% if shippingaddrest %}
         {% for item in shippingaddrest %}
-          <div class="addresstv">{{item.theaddress}}------>{{item.themobiles}}</div><br>
-          <a href="{% url 'changeaddress' %}">Change this Shipping Address</a>
+          <div class="addresstv">{{item.theaddress}}------> {{item.themobiles}}</div><br>
+          <a href="{% url 'changeaddress'  %}">Change this Shipping Address</a>
         {% endfor %}
         {% else %}
 
@@ -84,7 +84,8 @@ Shopping Cart
       </div>
     </div>
     <h4 class="text-center mt-6">Make Payment </h4>
-    <form id="payform" method="POST" action="{% url 'order' %}">
+    <!-- <form id="payform" method="POST" action="{% url 'order' %}"> -->
+      <form id="payform" method="POST">
       <div class="topay">
           <center>
               <button type="submit" id="btnPay" style="width: 30%; margin:0 auto;" class="btn btn-success">Make Payment</button>
@@ -92,7 +93,7 @@ Shopping Cart
               <input type="hidden" id="price" value="{{ totalamount }}" required><br>
           </center>
       </div>
-  </form>
+    </form>
   </div>
 
 </section>
@@ -104,11 +105,13 @@ Shopping Cart
     $("#payform").on("submit", function(e){
         e.preventDefault();
         $.ajax({
-            url: "{% url 'init_payment' %}",
+            // url: "{% url 'init_payment' %}",
+            url: "{% url 'order' %}",
             type: 'POST',
             data: {
                 email: '{{ user.email }}',
                 amount: '{{ totalamount }}',
+                current_address: '{{ current_address }}',
                 csrfmiddlewaretoken: '{{ csrf_token }}',
                 dataType: "json",
             },

@@ -57,9 +57,7 @@
           {% endfor %}
           <tr>
             <td></td>
-            <td>
-
-            </td>
+            <td></td>
             <td colspan=3>
              <!-- <a class="btn btn-success">Checkout</a> Total Amount: N{{ totalamount | floatformat:2 | intcomma }} -->
              <a class="btn btn-success" href="{% url 'checkout' q=allitems.0.order_number %}">Checkout</a> Total Amount: N{{ totalamount | floatformat:2 | intcomma }}
