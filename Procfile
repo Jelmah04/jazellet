@@ -1,0 +1,1 @@
+web: gunicorn jazellet.wsgi --log-file -
